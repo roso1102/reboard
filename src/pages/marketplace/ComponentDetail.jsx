@@ -6,8 +6,9 @@ import VerifiedBadge from '../../components/VerifiedBadge'
 import GradeBadge from '../../components/GradeBadge'
 import Badge from '../../components/Badge'
 import { ReusabilityModal } from '../../components/ReusabilityScore'
-import { MOCK_COMPONENTS, LAYER_NAMES } from '../../data/mockData'
+import { LAYER_NAMES } from '../../data/mockData'
 import { useCart } from '../../context/CartContext'
+import { useStore } from '../../context/StoreContext'
 
 function similarity(comp, other) {
   if (comp.id === other.id) return 0
@@ -48,7 +49,8 @@ function estimateCO2(component) {
 
 export default function ComponentDetail() {
   const { id } = useParams()
-  const component = MOCK_COMPONENTS.find((c) => c.id === id)
+  const { marketplaceComponents } = useStore()
+  const component = marketplaceComponents.find((c) => c.id === id)
   const [reusabilityModalOpen, setReusabilityModalOpen] = useState(false)
   const [contactSent, setContactSent] = useState(false)
   const [bulkRequested, setBulkRequested] = useState(false)
@@ -67,7 +69,7 @@ export default function ComponentDetail() {
     )
   }
 
-  const similar = MOCK_COMPONENTS.filter((c) => c.id !== id)
+  const similar = marketplaceComponents.filter((c) => c.id !== id)
     .map((c) => ({ ...c, score: similarity(component, c) }))
     .sort((a, b) => b.score - a.score)
     .slice(0, 3)

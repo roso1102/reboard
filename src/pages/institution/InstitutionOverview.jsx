@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom'
 import Card from '../../components/Card'
+import Badge from '../../components/Badge'
 import {
   INSTITUTION_KPIS,
   MONTHLY_RECOVERY,
   FAILURE_TYPES,
-  MOCK_COMPONENTS,
   FAILURE_RATE_BY_LAYER,
   REUSABILITY_BY_CATEGORY,
 } from '../../data/mockData'
+import { useStore } from '../../context/StoreContext'
 import {
   LineChart,
   Line,
@@ -83,24 +84,39 @@ const CO2_MONTHLY = [
   { month: 'Feb', saved: 64 },
 ]
 
-const gradeDistribution = (() => {
-  const counts = { A: 0, B: 0, C: 0, D: 0 }
-  MOCK_COMPONENTS.forEach((c) => { counts[c.grade] = (counts[c.grade] || 0) + 1 })
-  return Object.entries(counts).map(([grade, count]) => ({ grade, count }))
-})()
-
 const GRADE_COLORS = { A: '#16a34a', B: '#111827', C: '#6b7280', D: '#d1d5db' }
-
-const RECENT_TESTS = [
-  { name: 'ESP32-WROOM-32', grade: 'A', time: '2 hours ago', reusability: 92 },
-  { name: 'STM32F103C8', grade: 'B', time: '5 hours ago', reusability: 78 },
-  { name: 'Arduino Nano (clone)', grade: 'C', time: '1 day ago', reusability: 65 },
-  { name: 'LM2596 Buck Module', grade: 'A', time: '1 day ago', reusability: 90 },
-]
 
 const totalCO2Saved = CO2_MONTHLY.reduce((s, m) => s + m.saved, 0)
 
+const STATUS_VARIANT = { Confirmed: 'primary', Processing: 'warning', Shipped: 'success', Delivered: 'success', Cancelled: 'default' }
+
+function timeAgo(iso) {
+  const diff = Date.now() - new Date(iso).getTime()
+  const mins = Math.floor(diff / 60000)
+  if (mins < 60) return `${mins}m ago`
+  const hrs = Math.floor(mins / 60)
+  if (hrs < 24) return `${hrs}h ago`
+  return `${Math.floor(hrs / 24)}d ago`
+}
+
 export default function InstitutionOverview() {
+  const { components, orders } = useStore()
+
+  const gradeDistribution = (() => {
+    const counts = { A: 0, B: 0, C: 0, D: 0 }
+    components.forEach((c) => { counts[c.grade] = (counts[c.grade] || 0) + 1 })
+    return Object.entries(counts).map(([grade, count]) => ({ grade, count }))
+  })()
+
+  const recentTests = components.slice(0, 4).map((c) => ({
+    name: c.name,
+    grade: c.grade,
+    time: c.testTimestamp ? timeAgo(c.testTimestamp) : '—',
+    reusability: c.reusability,
+  }))
+
+  const pendingOrders = orders.filter((o) => o.status !== 'Delivered' && o.status !== 'Cancelled')
+
   return (
     <div className="space-y-8 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
@@ -116,7 +132,13 @@ export default function InstitutionOverview() {
             Test New Component
           </Link>
           <Link to="/dashboard/inventory" className="inline-flex items-center gap-2 border border-gray-200 text-gray-700 text-sm font-medium px-4 py-2.5 rounded-xl hover:bg-gray-50">
-            View Inventory
+            Inventory
+          </Link>
+          <Link to="/dashboard/orders" className="relative inline-flex items-center gap-2 border border-gray-200 text-gray-700 text-sm font-medium px-4 py-2.5 rounded-xl hover:bg-gray-50">
+            Orders
+            {pendingOrders.length > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 bg-green-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">{pendingOrders.length}</span>
+            )}
           </Link>
         </div>
       </div>
@@ -264,8 +286,8 @@ export default function InstitutionOverview() {
             <Link to="/dashboard/inventory" className="text-sm text-gray-500 hover:text-gray-900 font-medium">View all</Link>
           </div>
           <div className="divide-y divide-gray-50">
-            {RECENT_TESTS.map((t) => (
-              <div key={t.name} className="py-3 flex items-center justify-between">
+            {recentTests.map((t, idx) => (
+              <div key={`${t.name}-${idx}`} className="py-3 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold text-white ${
                     t.grade === 'A' ? 'bg-green-600' : t.grade === 'B' ? 'bg-gray-900' : t.grade === 'C' ? 'bg-gray-500' : 'bg-gray-300'
@@ -316,6 +338,35 @@ export default function InstitutionOverview() {
           </div>
         </Card>
       </div>
+
+      {orders.length > 0 && (
+        <Card>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="font-bold text-gray-900">Recent Orders</h3>
+              <p className="text-xs text-gray-400 mt-0.5">{pendingOrders.length} pending · {orders.length} total</p>
+            </div>
+            <Link to="/dashboard/orders" className="text-sm text-gray-500 hover:text-gray-900 font-medium">View all →</Link>
+          </div>
+          <div className="divide-y divide-gray-50">
+            {orders.slice(0, 5).map((o) => (
+              <div key={o.id} className="py-3 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Badge variant={STATUS_VARIANT[o.status] || 'default'}>{o.status}</Badge>
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">{o.id}</p>
+                    <p className="text-xs text-gray-400">{o.buyer?.name || 'Buyer'} · {o.items.length} item{o.items.length > 1 ? 's' : ''}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-bold text-gray-900">₹{o.total}</p>
+                  <p className="text-[11px] text-gray-400">{timeAgo(o.placedAt)}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
     </div>
   )
 }

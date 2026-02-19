@@ -1,5 +1,5 @@
 import { useMemo, useState, useCallback, useRef } from 'react'
-import { MOCK_COMPONENTS, LAYER_NAMES } from '../data/mockData'
+import { LAYER_NAMES } from '../data/mockData'
 import { callGemini, hasApiKey } from '../services/gemini'
 
 const FEATURE_KEYWORDS = {
@@ -89,7 +89,7 @@ Only include layers from: GPIO,ADC,PWM,UART,SPI,I2C,WiFi,BLE,Power
 Only include categories from: Microcontroller,Sensor,Driver,Communication,Power Module
 Project: `
 
-export function useMarketplaceSearch(components = MOCK_COMPONENTS) {
+export function useMarketplaceSearch(components = []) {
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('')
   const [grade, setGrade] = useState('')

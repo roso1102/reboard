@@ -14,6 +14,7 @@ import {
   hasApiKey,
 } from '../../services/gemini'
 import { downloadReport } from '../../services/reportGenerator'
+import { useStore } from '../../context/StoreContext'
 
 const LAYER_NAMES = ['GPIO', 'ADC', 'PWM', 'UART', 'SPI', 'I2C', 'WiFi', 'BLE', 'Power']
 
@@ -269,6 +270,7 @@ export default function TestNewComponent() {
   const dataRef = useRef(null)
   const { burst: burstInventory, LeafLayer: InventoryLeaves } = useLeafBurst()
   const { burst: burstMarketplace, LeafLayer: MarketplaceLeaves } = useLeafBurst()
+  const { addComponent } = useStore()
 
   const handleComponentSelect = (opt) => {
     setComponentType(opt.label || opt.value)
@@ -389,12 +391,14 @@ export default function TestNewComponent() {
 
   const handleAddToInventory = (e) => {
     burstInventory(e)
-    setSuccessAction('Added to internal inventory (demo).')
+    addComponent(componentType, modelName, category, serial, result, false)
+    setSuccessAction('Added to internal inventory — visible in your Inventory page.')
   }
 
   const handleListOnMarketplace = (e) => {
     burstMarketplace(e)
-    setSuccessAction('Listed on marketplace (demo).')
+    addComponent(componentType, modelName, category, serial, result, true)
+    setSuccessAction('Listed on marketplace — now visible to buyers.')
   }
 
   return (

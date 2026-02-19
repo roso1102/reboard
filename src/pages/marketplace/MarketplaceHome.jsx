@@ -6,6 +6,7 @@ import GradeBadge from '../../components/GradeBadge'
 import { useMarketplaceSearch } from '../../hooks/useMarketplaceSearch'
 import { CATEGORIES } from '../../data/mockData'
 import { useCart } from '../../context/CartContext'
+import { useStore } from '../../context/StoreContext'
 import { hasApiKey } from '../../services/gemini'
 
 const QUICK_PROMPTS = [
@@ -111,6 +112,7 @@ function ComponentCard({ component }) {
 }
 
 export default function MarketplaceHome() {
+  const { marketplaceComponents } = useStore()
   const {
     query, setQuery,
     category, setCategory,
@@ -121,7 +123,7 @@ export default function MarketplaceHome() {
     smartActive,
     runSmartSearch,
     clearSmartResults,
-  } = useMarketplaceSearch()
+  } = useMarketplaceSearch(marketplaceComponents)
   const { totalItems } = useCart()
   const [inputValue, setInputValue] = useState('')
   const textareaRef = useRef(null)
