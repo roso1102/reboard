@@ -27,7 +27,7 @@ export function ReusabilityModal({ open, onClose }) {
           for more use cases and have longer expected lifespan in circular use.
         </p>
         <p className="text-sm text-gray-600 mb-4">
-          Scores are certified by the E-Grade Functional Valuation System and displayed on all listed components.
+          Scores are certified by the ReBoard Functional Valuation System and displayed on all listed components.
         </p>
         <button
           type="button"

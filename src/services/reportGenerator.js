@@ -3,7 +3,7 @@ const LAYER_NAMES = ['GPIO', 'ADC', 'PWM', 'UART', 'SPI', 'I2C', 'WiFi', 'BLE', 
 export function generateReportHTML({ componentType, modelName, serial, category, result, testDataFile }) {
   const date = new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })
   const time = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
-  const reportId = `EGR-${Date.now().toString(36).toUpperCase()}`
+  const reportId = `RB-${Date.now().toString(36).toUpperCase()}`
 
   const gradeColor = result.grade === 'A' ? '#16a34a' : result.grade === 'B' ? '#111827' : result.grade === 'C' ? '#6b7280' : '#d1d5db'
   const gradeBg = result.grade === 'A' ? '#f0fdf4' : result.grade === 'B' ? '#f9fafb' : result.grade === 'C' ? '#f9fafb' : '#fef2f2'
@@ -34,7 +34,7 @@ export function generateReportHTML({ componentType, modelName, serial, category,
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>E-Grade Report — ${componentType}</title>
+<title>ReBoard Report — ${componentType}</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -70,7 +70,7 @@ export function generateReportHTML({ componentType, modelName, serial, category,
 
   <div class="header">
     <div>
-      <div class="logo">E<span>-</span>Grade</div>
+      <div class="logo">ReBoard</div>
       <div style="font-size:12px;color:#6b7280;margin-top:2px">Electronic Asset Recovery & Circular Exchange</div>
     </div>
     <div class="meta">
@@ -142,7 +142,7 @@ export function generateReportHTML({ componentType, modelName, serial, category,
   </div>
 
   <div class="footer">
-    <div class="brand">E-Grade</div>
+    <div class="brand">ReBoard</div>
     <div>Report ${reportId} · Generated ${date} · This is an automated assessment</div>
   </div>
 
@@ -153,7 +153,7 @@ export function generateReportHTML({ componentType, modelName, serial, category,
 
 export function downloadReport(params, format = 'html') {
   const html = generateReportHTML(params)
-  const filename = `E-Grade-Report-${(params.componentType || 'component').replace(/\s+/g, '-')}-${Date.now()}`
+  const filename = `ReBoard-Report-${(params.componentType || 'component').replace(/\s+/g, '-')}-${Date.now()}`
 
   if (format === 'pdf') {
     const iframe = document.createElement('iframe')

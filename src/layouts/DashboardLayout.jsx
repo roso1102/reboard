@@ -40,7 +40,7 @@ export default function DashboardLayout() {
       >
         <div className={`border-b border-gray-100 ${collapsed ? 'p-3 text-center' : 'p-4'}`}>
           <Link to="/" className={`font-bold text-gray-900 ${collapsed ? 'text-sm' : 'text-lg'}`}>
-            {collapsed ? 'E' : 'E-Grade'}
+            {collapsed ? 'R' : 'ReBoard'}
           </Link>
           {!collapsed && <p className="text-xs text-gray-500 mt-0.5">Dashboard</p>}
         </div>

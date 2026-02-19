@@ -2,7 +2,7 @@ import Tooltip from './Tooltip'
 
 export default function VerifiedBadge({ className = '' }) {
   return (
-    <Tooltip content="Certified by E-Grade Functional Valuation System">
+    <Tooltip content="Certified by ReBoard Functional Valuation System">
       <span
         className={`inline-flex items-center gap-1 text-green-600 text-xs font-medium ${className}`}
         aria-label="Verified"

@@ -16,7 +16,7 @@ export default function PageLoader({ children }) {
           <div className="absolute inset-0 w-16 h-16 rounded-full border-4 border-gray-900 border-t-transparent animate-spin" />
         </div>
         <p className="mt-6 text-xl font-extrabold tracking-tight text-gray-900">
-          E-Grade
+          ReBoard
         </p>
         <p className="mt-1 text-sm text-gray-500 font-medium">
           Loading platform...

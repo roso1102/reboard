@@ -24,7 +24,7 @@ const FEATURES = [
   },
   {
     title: 'Verified Certification',
-    desc: 'E-Grade certified functional valuation — trusted by organizations and buyers.',
+    desc: 'ReBoard certified functional valuation — trusted by organizations and buyers.',
     icon: (
       <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -77,7 +77,7 @@ const CIRCLE_STEPS = [
   },
   {
     word: 'Certify',
-    desc: 'Issue verified E-Grade certification reports.',
+    desc: 'Issue verified ReBoard certification reports.',
     stats: [
       { value: '1,102', label: 'Certifications Issued' },
       { value: '100%', label: 'Audit Traceability' },
@@ -289,7 +289,7 @@ export default function Landing() {
     <div className="min-h-screen flex flex-col bg-white text-gray-900">
       <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <span className="text-xl font-bold tracking-tight text-gray-900">E-Grade</span>
+          <span className="text-xl font-bold tracking-tight text-gray-900">ReBoard</span>
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
             <a href="#about" className="hover:text-gray-900">About</a>
             <a href="#features" className="hover:text-gray-900">Features</a>
@@ -385,7 +385,7 @@ export default function Landing() {
 
       <footer className="border-t border-gray-100 py-10">
         <div className="max-w-6xl mx-auto px-6 flex flex-wrap items-center justify-between gap-6">
-          <span className="text-sm font-bold text-gray-900">E-Grade</span>
+          <span className="text-sm font-bold text-gray-900">ReBoard</span>
           <div className="flex flex-wrap gap-6 text-sm text-gray-500">
             <a href="#about" className="hover:text-gray-900">About</a>
             <a href="#features" className="hover:text-gray-900">Features</a>

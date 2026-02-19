@@ -158,7 +158,7 @@ export default function MarketplaceHome() {
       <header className="border-b border-gray-100 sticky top-0 z-30 bg-white/90 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto px-6 py-3.5 flex items-center justify-between">
           <Link to="/" className="text-xl font-bold text-gray-900">
-            E<span className="text-green-600">-</span>Grade
+            Re<span className="text-green-600">Board</span>
           </Link>
           <nav className="flex items-center gap-5 text-sm">
             <Link to="/marketplace" className="text-gray-900 font-medium">Marketplace</Link>

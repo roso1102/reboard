@@ -49,7 +49,7 @@ export async function testConnection() {
 }
 
 export function buildDiagnosticPrompt(componentType, modelName, category, testDataPreview) {
-  return `You are an electronic component diagnostic system for E-Grade, a circular economy platform that tests and grades electronic components for reuse.
+  return `You are an electronic component diagnostic system for ReBoard, a circular economy platform that tests and grades electronic components for reuse.
 
 Component: ${componentType}
 Model: ${modelName || 'Unknown'}
