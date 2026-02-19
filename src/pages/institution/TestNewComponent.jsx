@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Card from '../../components/Card'
 import Button from '../../components/Button'
 import Badge from '../../components/Badge'
@@ -152,7 +152,7 @@ function generateFallbackResult(componentType, category, testDataText) {
         risks: risks.length > 0 ? risks.slice(0, 6) : ['No critical risks detected — verify under sustained load'],
         co2Saved: grade <= 'B' ? `~${(0.3 + Math.random() * 0.5).toFixed(1)} kg` : grade === 'C' ? '~0.1 kg' : '~0 kg (salvage only)',
         estimatedValue: grade === 'A' ? '₹300–500' : grade === 'B' ? '₹150–300' : grade === 'C' ? '₹50–150' : '₹0–50 (parts only)',
-        recommendation: `This ${componentType} has been assessed at Grade ${grade} with a ${reusability}% reusability score. ${grade === 'A' ? 'All tested layers passed — suitable for production-grade and general-purpose applications.' : grade === 'B' ? 'Most layers are functional with minor degradation — suitable for standard non-critical applications.' : grade === 'C' ? `Significant degradation detected in ${degradedLayers.concat(failedLayers).join(', ')}. Only suitable for learning, basic prototyping, or single-function use where failed layers are not required.` : `Catastrophic failure across ${failedLayers.length} layers. This component is NOT suitable for any functional application. Recommended for parts salvage or educational teardown only.`} We recommend performing a sustained load test and thermal stress validation before deploying in any live environment. Disclaimer: This assessment is generated via automated diagnostics and AI analysis. It should not be relied upon for safety-critical, medical, aerospace, or life-support applications. Always perform independent verification and compliance testing before deploying in production environments.`,
+        recommendation: `This ${componentType} has been assessed at Grade ${grade} with a ${reusability}% reusability score. ${grade === 'A' ? 'All tested layers passed — suitable for production-grade and general-purpose applications.' : grade === 'B' ? 'Most layers are functional with minor degradation — suitable for standard non-critical applications.' : grade === 'C' ? `Significant degradation detected in ${degradedLayers.concat(failedLayers).join(', ')}. Only suitable for learning, basic prototyping, or single-function use where failed layers are not required.` : `Catastrophic failure across ${failedLayers.length} layers. This component is NOT suitable for any functional application. Recommended for parts salvage or educational teardown only.`} We recommend performing a sustained load test and thermal stress validation before deploying in any live environment. Disclaimer: This assessment is generated via automated diagnostics and intelligent analysis. It should not be relied upon for safety-critical, medical, aerospace, or life-support applications. Always perform independent verification and compliance testing before deploying in production environments.`,
       }
     }
   }
@@ -182,7 +182,7 @@ function generateFallbackResult(componentType, category, testDataText) {
     risks: ['No test data uploaded — results are estimated', 'Upload test data for accurate grading'],
     co2Saved: `~${(0.2 + Math.random() * 0.3).toFixed(1)} kg`,
     estimatedValue: `₹${60 + seed * 10}`,
-    recommendation: `This ${componentType} has been assessed at Grade ${grade} with a ${reusability}% estimated reusability score. Note: no test data was provided, so this is a rough estimate based on component type only. Upload actual test data (.json) for an accurate layer-by-layer diagnosis. We recommend performing a sustained load test and thermal stress validation before deploying in any live environment. Disclaimer: This assessment is generated via automated diagnostics and AI analysis. It should not be relied upon for safety-critical, medical, aerospace, or life-support applications. Always perform independent verification and compliance testing before deploying in production environments.`,
+    recommendation: `This ${componentType} has been assessed at Grade ${grade} with a ${reusability}% estimated reusability score. Note: no test data was provided, so this is a rough estimate based on component type only. Upload actual test data (.json) for an accurate layer-by-layer diagnosis. We recommend performing a sustained load test and thermal stress validation before deploying in any live environment. Disclaimer: This assessment is generated via automated diagnostics and intelligent analysis. It should not be relied upon for safety-critical, medical, aerospace, or life-support applications. Always perform independent verification and compliance testing before deploying in production environments.`,
   }
 }
 
@@ -201,6 +201,53 @@ function generateFallbackCircuit(componentType) {
     voltage: '3.3V – 5V',
     keySpecs: [`${name} module`, 'Standard pinout', 'See datasheet for full specs'],
   }
+}
+
+function DownloadDropdown({ onDownload }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef(null)
+
+  useEffect(() => {
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false) }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="inline-flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+      >
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        Download Report
+        <svg className={`w-3.5 h-3.5 transition-transform ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      {open && (
+        <div className="absolute right-0 mt-1 w-44 rounded-xl border border-gray-200 bg-white shadow-lg z-20 overflow-hidden animate-fade-in">
+          <button
+            onClick={() => { onDownload('pdf'); setOpen(false) }}
+            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2l5 5h-5V4zM6 20V4h5v7h7v9H6zm2-5h2v-1H8v-2h3v-1H8v-1h4v6H8v-1zm5 0h1.5c.83 0 1.5-.67 1.5-1.5v-1c0-.83-.67-1.5-1.5-1.5H13v4zm1-3h.5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H14v-2z"/></svg>
+            PDF Document
+          </button>
+          <button
+            onClick={() => { onDownload('html'); setOpen(false) }}
+            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors border-t border-gray-100"
+          >
+            <svg className="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+            HTML Report
+          </button>
+        </div>
+      )}
+    </div>
+  )
 }
 
 export default function TestNewComponent() {
@@ -356,7 +403,7 @@ export default function TestNewComponent() {
         <h1 className="text-2xl font-bold text-gray-900">Test New Component</h1>
         <p className="text-gray-500 mt-1">
           Identify, diagnose, and grade electronic components for recovery
-          {hasApiKey() && <span className="ml-2 inline-flex items-center gap-1 text-xs text-green-600 font-medium"><span className="w-1.5 h-1.5 rounded-full bg-green-500" /> Gemini AI connected</span>}
+          {hasApiKey() && <span className="ml-2 inline-flex items-center gap-1 text-xs text-green-600 font-medium"><span className="w-1.5 h-1.5 rounded-full bg-green-500" /> Intelligent Diagnostics active</span>}
         </p>
       </div>
 
@@ -412,7 +459,7 @@ export default function TestNewComponent() {
                     className="w-full rounded-xl border border-dashed border-gray-300 p-4 text-sm text-gray-500 hover:bg-gray-50 hover:border-gray-400 text-center"
                   >
                     {photoIdentifying ? (
-                      <span className="text-green-600">Identifying with AI...</span>
+                      <span className="text-green-600">Identifying component...</span>
                     ) : photoPreview ? (
                       <span className="text-gray-900 font-medium">Photo uploaded — click to replace</span>
                     ) : (
@@ -422,7 +469,7 @@ export default function TestNewComponent() {
                   {photoPreview && (
                     <div className="mt-2 flex items-center gap-3">
                       <img src={photoPreview} alt="Component" className="w-16 h-16 rounded-xl object-cover border border-gray-200" />
-                      <p className="text-xs text-gray-400">Image will be sent to Gemini AI for identification</p>
+                      <p className="text-xs text-gray-400">Image will be analyzed for auto-identification</p>
                     </div>
                   )}
                 </div>
@@ -456,7 +503,7 @@ export default function TestNewComponent() {
                         <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" className="opacity-25" />
                         <path d="M4 12a8 8 0 018-8" stroke="currentColor" strokeWidth="3" strokeLinecap="round" className="opacity-75" />
                       </svg>
-                      {hasApiKey() ? 'Analyzing with Gemini AI...' : 'Running diagnostic...'}
+                      {hasApiKey() ? 'Running intelligent analysis...' : 'Running diagnostic...'}
                     </span>
                   ) : 'Run Diagnostic'}
                 </Button>
@@ -525,9 +572,9 @@ export default function TestNewComponent() {
             <ol className="space-y-3 text-sm">
               {[
                 { step: '1', title: 'Select or type component', desc: 'Category detected automatically' },
-                { step: '2', title: 'Upload photo (optional)', desc: 'AI identifies model & specs' },
+                { step: '2', title: 'Upload photo (optional)', desc: 'Auto-identifies model & specs' },
                 { step: '3', title: 'Upload test data (optional)', desc: 'JSON, CSV, or log files' },
-                { step: '4', title: 'Run Diagnostic', desc: 'Gemini AI analyzes & grades' },
+                { step: '4', title: 'Run Diagnostic', desc: 'Intelligent system analyzes & grades' },
               ].map((s) => (
                 <li key={s.step} className="flex gap-3">
                   <span className="w-6 h-6 rounded-lg bg-gray-900 text-white text-xs font-bold flex items-center justify-center shrink-0">{s.step}</span>
@@ -542,9 +589,9 @@ export default function TestNewComponent() {
 
           {!hasApiKey() && (
             <Card className="border-gray-200">
-              <p className="text-sm font-medium text-gray-900 mb-1">Enable Gemini AI</p>
+              <p className="text-sm font-medium text-gray-900 mb-1">Enable Intelligent Diagnostics</p>
               <p className="text-xs text-gray-500 leading-relaxed">
-                Add your API key in <code className="bg-gray-100 px-1 rounded">.env</code> as <code className="bg-gray-100 px-1 rounded">VITE_GEMINI_API_KEY</code> for AI-powered diagnostics, photo identification, and circuit diagram fetching. Works with fallback data without it.
+                Add your API key in <code className="bg-gray-100 px-1 rounded">.env</code> as <code className="bg-gray-100 px-1 rounded">VITE_GEMINI_API_KEY</code> for enhanced diagnostics, photo identification, and circuit diagram fetching. Works with fallback data without it.
               </p>
             </Card>
           )}
@@ -593,7 +640,7 @@ export default function TestNewComponent() {
                 <div className="flex items-center gap-3">
                   <h3 className="text-xl font-bold text-gray-900">Diagnostic Report</h3>
                   {result.geminiPowered && (
-                    <span className="text-[10px] bg-gray-900 text-white px-2 py-0.5 rounded-full font-medium">Gemini AI</span>
+                    <span className="text-[10px] bg-gray-900 text-white px-2 py-0.5 rounded-full font-medium">Intelligent Analysis</span>
                   )}
                 </div>
                 <p className="text-sm text-gray-500 mt-1">{componentType}{modelName ? ` — ${modelName}` : ''}</p>
@@ -723,24 +770,12 @@ export default function TestNewComponent() {
                   <Button variant="secondary" onClick={handleListOnMarketplace}>List on Marketplace</Button>
                   <MarketplaceLeaves />
                 </div>
-                <Button
-                  variant="ghost"
-                  onClick={() => downloadReport({
-                    componentType,
-                    modelName,
-                    serial,
-                    category,
-                    result,
+                <DownloadDropdown
+                  onDownload={(fmt) => downloadReport({
+                    componentType, modelName, serial, category, result,
                     testDataFile: testData?.name,
-                  })}
-                >
-                  <span className="flex items-center gap-1.5">
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    Download Report
-                  </span>
-                </Button>
+                  }, fmt)}
+                />
               </div>
             </div>
           </Card>

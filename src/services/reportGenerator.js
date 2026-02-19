@@ -82,7 +82,7 @@ export function generateReportHTML({ componentType, modelName, serial, category,
   <div class="title">${componentType}${modelName ? ` — ${modelName}` : ''}</div>
   <div class="subtitle">
     Category: ${category || '—'} · Serial: ${serial || '—'}${testDataFile ? ` · Data: ${testDataFile}` : ''}
-    ${result.geminiPowered ? ' · <span style="background:#111827;color:#fff;padding:2px 8px;border-radius:6px;font-size:11px">Gemini AI</span>' : ''}
+    ${result.geminiPowered ? ' · <span style="background:#111827;color:#fff;padding:2px 8px;border-radius:6px;font-size:11px">Intelligent Analysis</span>' : ''}
   </div>
 
   <div class="grade-bar">
@@ -151,13 +151,65 @@ export function generateReportHTML({ componentType, modelName, serial, category,
 </html>`
 }
 
-export function downloadReport(params) {
+export function downloadReport(params, format = 'html') {
   const html = generateReportHTML(params)
+  const filename = `E-Grade-Report-${(params.componentType || 'component').replace(/\s+/g, '-')}-${Date.now()}`
+
+  if (format === 'pdf') {
+    const iframe = document.createElement('iframe')
+    iframe.style.cssText = 'position:absolute;left:-9999px;top:0;width:850px;height:0;border:none'
+    document.body.appendChild(iframe)
+
+    const doc = iframe.contentDocument || iframe.contentWindow.document
+    doc.open()
+    doc.write(html)
+    doc.close()
+
+    const tryCapture = () => {
+      const pageEl = doc.querySelector('.page')
+      if (!pageEl) {
+        cleanup()
+        return
+      }
+
+      import('html2pdf.js').then((mod) => {
+        const html2pdf = mod.default
+        html2pdf()
+          .set({
+            margin: [0.4, 0.2, 0.4, 0.2],
+            filename: `${filename}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: {
+              scale: 2,
+              useCORS: true,
+              letterRendering: true,
+              scrollX: 0,
+              scrollY: 0,
+              windowWidth: 850,
+            },
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
+            pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
+          })
+          .from(pageEl)
+          .save()
+          .then(cleanup)
+          .catch(cleanup)
+      })
+    }
+
+    const cleanup = () => {
+      try { document.body.removeChild(iframe) } catch {}
+    }
+
+    setTimeout(tryCapture, 800)
+    return
+  }
+
   const blob = new Blob([html], { type: 'text/html' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = `E-Grade-Report-${(params.componentType || 'component').replace(/\s+/g, '-')}-${Date.now()}.html`
+  a.download = `${filename}.html`
   document.body.appendChild(a)
   a.click()
   document.body.removeChild(a)

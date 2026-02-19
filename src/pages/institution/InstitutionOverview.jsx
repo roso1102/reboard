@@ -109,13 +109,13 @@ export default function InstitutionOverview() {
           <p className="text-gray-500 mt-1">Real-time recovery metrics, sustainability impact & quick actions</p>
         </div>
         <div className="flex gap-3">
-          <Link to="/institution/test" className="inline-flex items-center gap-2 bg-gray-900 text-white text-sm font-medium px-4 py-2.5 rounded-xl hover:bg-gray-800">
+          <Link to="/dashboard/test" className="inline-flex items-center gap-2 bg-gray-900 text-white text-sm font-medium px-4 py-2.5 rounded-xl hover:bg-gray-800">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
             </svg>
             Test New Component
           </Link>
-          <Link to="/institution/inventory" className="inline-flex items-center gap-2 border border-gray-200 text-gray-700 text-sm font-medium px-4 py-2.5 rounded-xl hover:bg-gray-50">
+          <Link to="/dashboard/inventory" className="inline-flex items-center gap-2 border border-gray-200 text-gray-700 text-sm font-medium px-4 py-2.5 rounded-xl hover:bg-gray-50">
             View Inventory
           </Link>
         </div>
@@ -261,7 +261,7 @@ export default function InstitutionOverview() {
         <Card>
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold text-gray-900">Recent Tests</h3>
-            <Link to="/institution/inventory" className="text-sm text-gray-500 hover:text-gray-900 font-medium">View all</Link>
+            <Link to="/dashboard/inventory" className="text-sm text-gray-500 hover:text-gray-900 font-medium">View all</Link>
           </div>
           <div className="divide-y divide-gray-50">
             {RECENT_TESTS.map((t) => (

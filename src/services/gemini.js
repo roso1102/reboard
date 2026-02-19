@@ -24,7 +24,7 @@ export async function callGemini(prompt, imageBase64 = null) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       contents: [{ parts }],
-      generationConfig: { temperature: 0.4, maxOutputTokens: 2048 },
+      generationConfig: { temperature: 0.3, maxOutputTokens: 4096 },
     }),
   })
 
@@ -49,7 +49,7 @@ export async function testConnection() {
 }
 
 export function buildDiagnosticPrompt(componentType, modelName, category, testDataPreview) {
-  return `You are an electronic component diagnostic AI for E-Grade, a circular economy platform that tests and grades electronic components for reuse.
+  return `You are an electronic component diagnostic system for E-Grade, a circular economy platform that tests and grades electronic components for reuse.
 
 Component: ${componentType}
 Model: ${modelName || 'Unknown'}
@@ -76,7 +76,7 @@ Generate a detailed diagnostic report in this exact JSON format (return ONLY val
   "risks": ["<risk 1>", "<risk 2>"],
   "co2Saved": "<estimated kg CO2 saved by reusing instead of discarding>",
   "estimatedValue": "<estimated INR value>",
-  "recommendation": "<detailed 4-6 sentence recommendation covering: what the component is best suited for now, any limitations to be aware of, suggested testing before deployment, and end with a disclaimer: 'Disclaimer: This assessment is generated via automated diagnostics and AI analysis. It should not be relied upon for safety-critical, medical, aerospace, or life-support applications. Always perform independent verification and compliance testing before deploying in production environments.'>"
+  "recommendation": "<detailed 4-6 sentence recommendation covering: what the component is best suited for now, any limitations to be aware of, suggested testing before deployment, and end with a disclaimer: 'Disclaimer: This assessment is generated via automated diagnostics and intelligent analysis. It should not be relied upon for safety-critical, medical, aerospace, or life-support applications. Always perform independent verification and compliance testing before deploying in production environments.'>"
 }
 
 Be realistic based on the component type. If it's a sensor, WiFi/BLE should be false. Match the category to appropriate layer capabilities. The recommendation must be detailed and always end with the disclaimer about not using for critical applications.`

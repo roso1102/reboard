@@ -24,7 +24,7 @@ const FEATURES = [
   },
   {
     title: 'Verified Certification',
-    desc: 'E-Grade certified functional valuation — trusted by institutions and buyers.',
+    desc: 'E-Grade certified functional valuation — trusted by organizations and buyers.',
     icon: (
       <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -88,12 +88,12 @@ const CIRCLE_STEPS = [
     desc: 'Publish graded components on the marketplace.',
     stats: [
       { value: '430', label: 'Active Listings' },
-      { value: '12', label: 'Seller Institutions' },
+      { value: '12', label: 'Active Sellers' },
     ],
   },
   {
     word: 'Match',
-    desc: 'AI-powered matching to buyer requirements.',
+    desc: 'Intelligent matching to buyer requirements.',
     stats: [
       { value: '89%', label: 'Match Accuracy' },
       { value: '< 2s', label: 'Avg Response Time' },
@@ -296,8 +296,8 @@ export default function Landing() {
             <a href="#circular" className="hover:text-gray-900">Circular Economy</a>
           </nav>
           <div className="flex items-center gap-3">
-            <Link to="/institution">
-              <Button variant="ghost" className="text-sm">Institution Login</Button>
+            <Link to="/dashboard">
+              <Button variant="ghost" className="text-sm">Dashboard</Button>
             </Link>
             <Link to="/marketplace">
               <Button variant="primary" className="text-sm">Marketplace</Button>
@@ -321,9 +321,9 @@ export default function Landing() {
             Test. Grade. Recover. Reuse.
           </p>
           <div className="mt-10 flex gap-4 justify-center flex-wrap animate-fade-in-up animate-delay-300">
-            <Link to="/institution">
+            <Link to="/dashboard">
               <Button variant="primary" className="text-base px-8 py-3.5">
-                Institution Login
+                Get Started
               </Button>
             </Link>
             <Link to="/marketplace">
@@ -365,10 +365,10 @@ export default function Landing() {
               Ready to <span className="highlight-green">recover value</span>?
             </h2>
             <p className="mt-4 text-lg text-gray-500">
-              Join institutions and buyers building a circular electronics economy.
+              Join organizations and buyers building a circular electronics economy.
             </p>
             <div className="mt-10 flex gap-4 justify-center flex-wrap">
-              <Link to="/institution">
+              <Link to="/dashboard">
                 <Button variant="primary" className="text-base px-8 py-3.5">
                   Get Started
                 </Button>

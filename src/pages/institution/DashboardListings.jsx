@@ -1,14 +1,14 @@
 import { Link } from 'react-router-dom'
-import Card from '../../../components/Card'
-import GradeBadge from '../../../components/GradeBadge'
-import Badge from '../../../components/Badge'
-import { MOCK_SELLER_LISTINGS } from '../../../data/mockData'
+import Card from '../../components/Card'
+import GradeBadge from '../../components/GradeBadge'
+import Badge from '../../components/Badge'
+import { MOCK_SELLER_LISTINGS } from '../../data/mockData'
 
-export default function SellerListings() {
+export default function DashboardListings() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">My Listings</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Marketplace Listings</h1>
         <p className="text-gray-500 mt-1">Components you have listed on the marketplace</p>
       </div>
 
@@ -31,7 +31,7 @@ export default function SellerListings() {
       </div>
       {MOCK_SELLER_LISTINGS.length === 0 && (
         <Card className="py-12 text-center text-gray-500">
-          No listings yet. List graded components from your inventory.
+          No listings yet. Grade components via Test Component, then list from Inventory.
         </Card>
       )}
     </div>
