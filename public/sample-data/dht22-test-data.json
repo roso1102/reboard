@@ -1,0 +1,61 @@
+{
+  "component": "DHT22",
+  "testDate": "2026-02-18T14:15:00Z",
+  "serialNumber": "SN-DHT22-0893",
+  "layers": {
+    "GPIO": {
+      "tested": true,
+      "dataPin": 4,
+      "signalIntegrity": "good",
+      "pullupOhm": 4700,
+      "result": "PASS"
+    },
+    "ADC": { "tested": false },
+    "PWM": { "tested": false },
+    "UART": { "tested": false },
+    "SPI": { "tested": false },
+    "I2C": { "tested": false },
+    "WiFi": { "tested": false },
+    "BLE": { "tested": false },
+    "Power": {
+      "tested": true,
+      "vinV": 3.31,
+      "drawMa": 1.5,
+      "peakMa": 2.5,
+      "result": "PASS"
+    }
+  },
+  "sensorCal": {
+    "temperature": {
+      "refC": 25.0,
+      "readings": [24.8, 25.1, 24.9, 25.0, 25.2],
+      "meanC": 25.0,
+      "stdDev": 0.15,
+      "maxErrC": 0.2,
+      "specTolC": 0.5,
+      "result": "PASS"
+    },
+    "humidity": {
+      "refRH": 50.0,
+      "readings": [49.2, 50.5, 49.8, 51.1, 50.3],
+      "meanRH": 50.18,
+      "stdDev": 0.71,
+      "maxErrRH": 1.1,
+      "specTolRH": 2.0,
+      "result": "PASS"
+    },
+    "responseTimeMs": { "temp": 620, "humidity": 810, "specMax": 2000 }
+  },
+  "endurance": {
+    "cycles": 500,
+    "failedReads": 3,
+    "reliability": 99.4,
+    "driftTemp": 0.08,
+    "driftRH": 0.3
+  },
+  "thermal": {
+    "ambientC": 25.0,
+    "peakC": 26.1,
+    "result": "PASS"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "component": "L298N",
+  "testDate": "2026-02-16T11:20:00Z",
+  "serialNumber": "SN-L298N-0347",
+  "layers": {
+    "GPIO": {
+      "tested": true,
+      "pins": {
+        "IN1": "ok", "IN2": "ok", "IN3": "ok",
+        "IN4": "dead", "ENA": "ok", "ENB": "intermittent"
+      },
+      "result": "DEGRADED"
+    },
+    "ADC": { "tested": false },
+    "PWM": {
+      "tested": true,
+      "chA": { "freqHz": [1000, 5000, 20000], "dutyCycleAcc": 97.5, "result": "PASS" },
+      "chB": { "freqHz": [1000, 5000], "dutyCycleAcc": 82.1, "result": "DEGRADED" },
+      "result": "PARTIAL"
+    },
+    "UART": { "tested": false },
+    "SPI": { "tested": false },
+    "I2C": { "tested": false },
+    "WiFi": { "tested": false },
+    "BLE": { "tested": false },
+    "Power": {
+      "tested": true,
+      "vinV": 12.04,
+      "logicV": 4.97,
+      "chA": { "noLoadMa": 18, "loadA": 1.2, "ratedA": 2.0, "vDropV": 2.8, "result": "PASS" },
+      "chB": { "noLoadMa": 45, "loadA": 0.8, "ratedA": 2.0, "vDropV": 4.1, "result": "DEGRADED" },
+      "thermalShutdown": false,
+      "result": "PARTIAL"
+    }
+  },
+  "motorTest": {
+    "chA": { "fwd": "PASS", "rev": "PASS", "brake": "PASS", "speed": "PASS" },
+    "chB": { "fwd": "PASS", "rev": "FAIL", "brake": "DEGRADED", "speed": "DEGRADED" }
+  },
+  "thermal": {
+    "ambientC": 25.1,
+    "peakC": 62.4,
+    "load": "dual 1A",
+    "result": "WARNING"
+  }
+}

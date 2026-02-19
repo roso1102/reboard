@@ -1,0 +1,77 @@
+{
+  "component": "STM32F103C8",
+  "testDate": "2026-02-17T09:45:00Z",
+  "serialNumber": "SN-STM32-0218",
+  "firmwareVersion": "HAL 1.8.4",
+  "layers": {
+    "GPIO": {
+      "tested": true,
+      "pinsTotal": 37,
+      "pinsWorking": 33,
+      "pinsFailed": [3, 8, 14, 27],
+      "voltage": 3.27,
+      "result": "DEGRADED"
+    },
+    "ADC": {
+      "tested": true,
+      "channels": 10,
+      "resolution": "12-bit",
+      "refVoltage": 3.3,
+      "readings": [
+        { "ch": 0, "expected": 1650, "actual": 1621 },
+        { "ch": 1, "expected": 825, "actual": 798 },
+        { "ch": 4, "expected": 2475, "actual": 2502 }
+      ],
+      "linearityError": 1.72,
+      "result": "DEGRADED"
+    },
+    "PWM": {
+      "tested": true,
+      "channelsTotal": 15,
+      "channelsWorking": 12,
+      "failedChannels": ["TIM1_CH3", "TIM2_CH1", "TIM3_CH4"],
+      "freqHz": [1000, 5000, 20000],
+      "dutyCycleAcc": 94.1,
+      "result": "DEGRADED"
+    },
+    "UART": {
+      "tested": true,
+      "ports": 3,
+      "baudRates": [9600, 115200],
+      "loopback": "PARTIAL",
+      "integrity": 97.8,
+      "result": "PARTIAL"
+    },
+    "SPI": {
+      "tested": true,
+      "interfaces": 2,
+      "maxClkMhz": 18,
+      "loopback": "PASS",
+      "result": "PASS"
+    },
+    "I2C": {
+      "tested": true,
+      "buses": 2,
+      "pullup": true,
+      "devicesFound": 1,
+      "clockStretch": false,
+      "result": "PARTIAL"
+    },
+    "WiFi": { "tested": false },
+    "BLE": { "tested": false },
+    "Power": {
+      "tested": true,
+      "vinV": 5.08,
+      "vregV": 3.27,
+      "idleMa": 22,
+      "activeMa": 85,
+      "result": "PASS"
+    }
+  },
+  "thermal": {
+    "ambientC": 24.8,
+    "peakC": 38.7,
+    "load": "all peripherals",
+    "result": "PASS"
+  }
+}

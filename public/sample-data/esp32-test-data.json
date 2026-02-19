@@ -1,0 +1,93 @@
+{
+  "component": "ESP32-WROOM-32",
+  "testDate": "2026-02-19T10:30:00Z",
+  "serialNumber": "SN-ESP32-0471",
+  "firmwareVersion": "4.4.6",
+  "layers": {
+    "GPIO": {
+      "tested": true,
+      "pinsTotal": 34,
+      "pinsWorking": 32,
+      "pinsFailed": [12, 15],
+      "voltage": 3.28,
+      "result": "PASS"
+    },
+    "ADC": {
+      "tested": true,
+      "channels": 18,
+      "resolution": "12-bit",
+      "refVoltage": 3.3,
+      "readings": [
+        { "ch": 0, "expected": 1650, "actual": 1647 },
+        { "ch": 1, "expected": 825, "actual": 831 },
+        { "ch": 2, "expected": 2475, "actual": 2468 }
+      ],
+      "linearityError": 0.18,
+      "result": "PASS"
+    },
+    "PWM": {
+      "tested": true,
+      "channelsTotal": 16,
+      "channelsWorking": 16,
+      "freqHz": [1000, 5000, 40000],
+      "dutyCycleAcc": 99.2,
+      "result": "PASS"
+    },
+    "UART": {
+      "tested": true,
+      "ports": 3,
+      "baudRates": [9600, 115200, 921600],
+      "loopback": "PASS",
+      "integrity": 100,
+      "result": "PASS"
+    },
+    "SPI": {
+      "tested": true,
+      "interfaces": 2,
+      "maxClkMhz": 40,
+      "loopback": "PASS",
+      "result": "PASS"
+    },
+    "I2C": {
+      "tested": true,
+      "buses": 2,
+      "pullup": true,
+      "devicesFound": 3,
+      "clockStretch": true,
+      "result": "PASS"
+    },
+    "WiFi": {
+      "tested": true,
+      "band": "2.4GHz",
+      "networksFound": 12,
+      "connTest": "PASS",
+      "rssi": -42,
+      "throughputMbps": 18.6,
+      "result": "PASS"
+    },
+    "BLE": {
+      "tested": true,
+      "version": "4.2",
+      "advTest": "PASS",
+      "scanTest": "PASS",
+      "devicesFound": 5,
+      "result": "PASS"
+    },
+    "Power": {
+      "tested": true,
+      "vinV": 5.02,
+      "vregV": 3.29,
+      "idleMa": 28,
+      "activeMa": 160,
+      "sleepUa": 12,
+      "brownout": true,
+      "result": "PASS"
+    }
+  },
+  "thermal": {
+    "ambientC": 25.3,
+    "peakC": 41.2,
+    "load": "WiFi TX + BLE",
+    "result": "PASS"
+  }
+}

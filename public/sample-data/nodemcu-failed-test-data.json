@@ -1,0 +1,89 @@
+{
+  "component": "NodeMCU ESP8266 v3",
+  "testDate": "2026-02-15T16:30:00Z",
+  "serialNumber": "SN-8266-0592",
+  "firmwareVersion": "AT 1.7.4 corrupted",
+  "layers": {
+    "GPIO": {
+      "tested": true,
+      "pinsTotal": 17,
+      "pinsWorking": 7,
+      "pinsFailed": [0, 1, 2, 3, 5, 9, 10, 12, 14, 16],
+      "voltage": 3.14,
+      "result": "FAIL"
+    },
+    "ADC": {
+      "tested": true,
+      "channels": 1,
+      "resolution": "10-bit",
+      "refVoltage": 3.3,
+      "readings": [{ "ch": 0, "expected": 512, "actual": 1023 }],
+      "result": "FAIL"
+    },
+    "PWM": {
+      "tested": true,
+      "channelsTotal": 4,
+      "channelsWorking": 1,
+      "freqHz": [1000],
+      "dutyCycleAcc": 71.3,
+      "result": "FAIL"
+    },
+    "UART": {
+      "tested": true,
+      "ports": 1,
+      "baudRates": [9600, 115200],
+      "loopback": "FAIL",
+      "integrity": 34.2,
+      "result": "FAIL"
+    },
+    "SPI": {
+      "tested": true,
+      "interfaces": 1,
+      "maxClkMhz": 1,
+      "loopback": "FAIL",
+      "result": "FAIL"
+    },
+    "I2C": {
+      "tested": true,
+      "buses": 1,
+      "pullup": false,
+      "scanResult": "bus error",
+      "result": "FAIL"
+    },
+    "WiFi": {
+      "tested": true,
+      "band": "2.4GHz",
+      "networksFound": 0,
+      "connTest": "FAIL",
+      "rssi": null,
+      "throughputMbps": 0,
+      "result": "FAIL"
+    },
+    "BLE": { "tested": false },
+    "Power": {
+      "tested": true,
+      "vinV": 5.01,
+      "vregV": 3.14,
+      "idleMa": 95,
+      "activeMa": 310,
+      "sleepUa": 15000,
+      "result": "FAIL"
+    }
+  },
+  "flash": {
+    "sizeMB": 4,
+    "read": "PARTIAL",
+    "write": "FAIL"
+  },
+  "thermal": {
+    "ambientC": 25.0,
+    "peakC": 71.8,
+    "load": "WiFi scan",
+    "result": "FAIL"
+  },
+  "corrosion": {
+    "usbConnector": true,
+    "pinHeaders": true,
+    "pcbDiscoloration": true
+  }
+}
