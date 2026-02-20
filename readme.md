@@ -1,12 +1,14 @@
-# E-Grade – Electronic Asset Recovery & Circular Exchange Platform
+# ReBoard – Electronic Asset Recovery & Circular Exchange Platform
 
-E-Grade is a modern web platform designed to prevent functional electronics from becoming waste. It provides graded functional valuation and circular allocation for electronic components through automated testing, reusability scoring, and a marketplace for buying and selling tested components.
+ReBoard is a modern web platform designed to prevent functional electronics from becoming waste. It provides graded functional valuation and circular allocation for electronic components through automated testing, reusability scoring, and a marketplace for buying and selling tested components.
 
 Live site: [https://reboardindia.vercel.app/](https://reboardindia.vercel.app/)
 
+
+
 ## Overview
 
-E-Grade operates in two primary modes:
+ReBoard operates in two primary modes:
 
 1. **Institutional Mode** - Internal asset recovery tool for colleges, labs, and startups to test, grade, and manage electronic components
 2. **Marketplace Mode** - Buy and sell platform for verified, graded electronic components
@@ -158,8 +160,8 @@ The reusability score (0-100%) indicates how suitable a component is for reuse:
 
 ## License
 
-[Add your license information here]
+This project is provided under a simple free-use license:
 
-## Contributing
-
-[Add contribution guidelines here]
+- You may use, copy, modify, and distribute this software, in source or binary form, for personal or commercial purposes, with or without modification.
+- Please include reasonable attribution to the ReBoard project and its original authors in your product documentation or about page.
+- This software is provided \"as is\", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software.
