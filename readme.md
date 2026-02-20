@@ -1,313 +1,167 @@
+# E-Grade – Electronic Asset Recovery & Circular Exchange Platform
+
+E-Grade is a modern web platform designed to prevent functional electronics from becoming waste. It provides graded functional valuation and circular allocation for electronic components through automated testing, reusability scoring, and a marketplace for buying and selling tested components.
 
+## Overview
 
-You are a senior full-stack product designer and React engineer.
+E-Grade operates in two primary modes:
 
-Build a clean, modern, professional web interface for a platform called:
+1. **Institutional Mode** - Internal asset recovery tool for colleges, labs, and startups to test, grade, and manage electronic components
+2. **Marketplace Mode** - Buy and sell platform for verified, graded electronic components
+
+## Features
+
+### Institutional Dashboard
+- **Component Testing** - Upload test data and run diagnostics to generate capability matrices, reusability scores, and grades
+- **Inventory Management** - Track components with filtering, search, and status management
+- **Analytics** - Visualize recovery trends, failure rates, and reusability metrics
+- **Component Grading** - Automated A/B/C/D grading system based on functional testing
+- **Reusability Scoring** - AI-powered scoring to determine component reuse potential
+
+### Marketplace
+- **Smart Search** - Natural language search to find components matching specific requirements
+- **Advanced Filtering** - Filter by category, grade, reusability percentage, location, and price
+- **Component Details** - Comprehensive view with capability matrices, certification reports, and approved use cases
+- **Shopping Cart** - Add components to cart and checkout flow
+- **Similar Matches** - AI-powered matching to find alternative components
+
+## Tech Stack
+
+- **React 18** - Modern React with functional components
+- **React Router** - Client-side routing
+- **Vite** - Fast build tool and dev server
+- **Tailwind CSS** - Utility-first CSS framework
+- **Recharts** - Charting library for analytics
+- **html2pdf.js** - PDF generation for reports
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v16 or higher)
+- npm or yarn
+
+### Installation
 
-"E-Grade – Electronic Asset Recovery & Circular Exchange Platform"
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd reboard
+```
 
-The platform has TWO MODES:
+2. Install dependencies:
+```bash
+npm install
+```
 
-1. Internal Institutional Mode (B2B Asset Recovery Tool)
-2. Marketplace Mode (Buyer + Seller)
+3. Start the development server:
+```bash
+npm run dev
+```
 
-Design this as a full web app using:
+4. Open your browser and navigate to `http://localhost:5173`
 
-* React (functional components)
-* Tailwind CSS
-* Clean minimal aesthetic
-* Soft shadows
-* 2xl rounded cards
-* Clear typography hierarchy
-* No clutter
-* Light theme default
-* Professional SaaS dashboard look
+### Building for Production
 
-The UI must be intuitive, modern, and minimal.
+```bash
+npm run build
+```
 
-Do NOT make it look like an e-commerce site.
-It must look like an industrial SaaS platform.
+The production build will be in the `dist` directory.
 
----
+### Preview Production Build
 
-# 🔵 STRUCTURE OF THE WEB APP
+```bash
+npm run preview
+```
 
-Create the following main sections:
+## Project Structure
 
-## 1️⃣ Landing Page
+```
+reboard/
+├── public/
+│   └── sample-data/          # Sample test data files
+├── src/
+│   ├── components/           # Reusable UI components
+│   ├── context/              # React context providers
+│   ├── hooks/                # Custom React hooks
+│   ├── layouts/              # Layout components
+│   ├── pages/                # Page components
+│   │   ├── institution/      # Institution dashboard pages
+│   │   └── marketplace/      # Marketplace pages
+│   ├── services/             # API and service functions
+│   ├── data/                 # Mock data and constants
+│   ├── App.jsx               # Main app component with routes
+│   └── main.jsx              # Entry point
+├── package.json
+├── vite.config.js
+├── tailwind.config.js
+└── README.md
+```
 
-Clean hero section with:
+## Usage
 
-Headline:
-"Prevent Functional Electronics from Becoming Waste"
+### Testing a Component
 
-Subheadline:
-"Graded Functional Valuation & Circular Allocation for Electronic Components"
+1. Navigate to the Institution Dashboard
+2. Go to "Test New Component"
+3. Fill in component details (type, SKU, category, serial number)
+4. Upload test data or use sample data
+5. Click "Run Diagnostic" to generate:
+   - Capability Matrix
+   - Layer Status
+   - Reusability Score
+   - Assigned Grade (A/B/C/D)
+   - Approved Use Cases
+6. Add to inventory or list on marketplace
 
-Two buttons:
+### Using the Marketplace
 
-* "Institution Login"
-* "Marketplace"
+1. Navigate to Marketplace from the landing page
+2. Use the search bar to describe what you need (e.g., "microcontroller with ADC, no WiFi required")
+3. Apply filters to narrow down results
+4. Click "View Details" on any component to see full specifications
+5. Add to cart and proceed to checkout
 
-Minimal illustration section (placeholder space)
-Feature highlight cards:
+## Component Grading System
 
-* Automated Layered Testing
-* Reusability Scoring
-* Verified Certification
-* Smart Matching Engine
+Components are graded based on functional testing:
 
-Footer:
+- **Grade A** - Fully functional, all layers working
+- **Grade B** - Minor limitations, most layers functional
+- **Grade C** - Significant limitations, partial functionality
+- **Grade D** - Limited functionality, specific use cases only
 
-* About
-* Contact
-* Terms
-* Sustainability Report
+## Reusability Scoring
 
----
+The reusability score (0-100%) indicates how suitable a component is for reuse:
+- Based on functional layer testing
+- Considers component condition and capabilities
+- Helps match components to appropriate use cases
 
-# 🔵 2️⃣ INSTITUTION DASHBOARD (Internal Asset Recovery Mode)
+## Development
 
-This dashboard is for colleges, labs, startups.
+### Available Scripts
 
-Sidebar Navigation:
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
 
-* Dashboard Overview
-* Test New Component
-* Inventory
-* Analytics
-* Settings
+### Code Style
 
----
+- Functional React components
+- Tailwind CSS for styling
+- Component-based architecture
+- Clean, minimal design aesthetic
 
-## Dashboard Overview Page
+## License
 
-Show KPI cards:
+[Add your license information here]
 
-* Total Components Tested
-* Recovered Value (₹)
-* Reusability Rate (%)
-* Scrap Reduction (%)
+## Contributing
 
-Below that:
-Graph:
-Monthly recovery trend
+[Add contribution guidelines here]
 
-Pie chart:
-Failure types distribution
+## Contact
 
----
-
-## Test New Component Page
-
-Form with:
-
-* Component Type (dropdown)
-* SKU / Model Name
-* Category (Microcontroller / Sensor / Driver / Communication / Power Module)
-* Serial Number
-* Upload Test Data (simulate)
-* Run Diagnostic Button
-
-After clicking:
-Show Generated:
-
-* Capability Matrix (table)
-* Layer Status
-* Reusability Score (%)
-* Assigned Grade (A/B/C/D)
-* Approved Use Cases (tags)
-
-Button:
-"Add to Internal Inventory"
-"List on Marketplace"
-
----
-
-## Inventory Page
-
-Table view:
-
-Columns:
-
-* Component ID
-* Type
-* Grade
-* Reusability %
-* Available Quantity
-* Location
-* Status (Internal / Listed / Sold)
-
-Search bar:
-Filter by grade, category, use case.
-
-Card toggle view option.
-
----
-
-## Analytics Page
-
-Charts:
-
-* Failure Rate by Layer
-* Average Reusability by Category
-* Value Recovered Per Month
-
-Keep charts simple and clean.
-
----
-
-# 🔵 3️⃣ MARKETPLACE MODE
-
-Two roles:
-
-BUYER
-SELLER
-
----
-
-## Marketplace Home
-
-Search bar with AI-style placeholder text:
-
-"Describe what you need (e.g., microcontroller with ADC, no WiFi required)"
-
-Below:
-Filter panel:
-
-* Category
-* Minimum Reusability %
-* Grade
-* Location
-* Price Range
-
-Card-based product listing layout.
-
-Each card shows:
-
-* Component Name
-* Verified Badge
-* Reusability %
-* Grade
-* Working Layers Icons
-* Disabled Layers Greyed Out
-* Price
-* Seller Type (Institution / Startup)
-* Location
-* View Details Button
-
----
-
-## Component Detail Page
-
-Show:
-
-* Capability Matrix
-* Functional Breakdown
-* Certification Report
-* Approved Use Cases
-* Test Timestamp
-* Seller Info
-* Similar Matches Section
-
-Buttons:
-
-* Contact Seller
-* Add to Cart
-* Request Bulk
-
----
-
-## Seller Dashboard
-
-Sidebar:
-
-* My Listings
-* Sales
-* Inventory
-* Analytics
-
-Seller can:
-
-* List graded component
-* Set price
-* Select approved use cases
-* View similarity score matches
-* View buyer requests
-
----
-
-# 🔵 UX REQUIREMENTS
-
-Design must:
-
-* Be extremely clean
-* Have generous spacing
-* Minimal colors (gray, white, soft blue accent)
-* Use soft shadows
-* Smooth hover animations
-* Subtle microinteractions
-* No visual clutter
-* Clear data hierarchy
-
-Must feel like:
-Notion + Stripe + Linear design aesthetic.
-
----
-
-# 🔵 FUNCTIONAL LOGIC TO SIMULATE
-
-Add mock data for:
-
-* 10 graded components
-* Different categories
-* Different grades
-* Different reusability %
-
-Add mock AI matching:
-
-If user types:
-"GPIO only board"
-Show components with:
-Working GPIO
-WiFi disabled
-
-Simulate similarity score logic.
-
----
-
-# 🔵 ADDITIONAL FEATURES
-
-Include:
-
-* Verified badge tooltip:
-  "Certified by E-Grade Functional Valuation System"
-
-* Grade Explanation Tooltip
-
-* Reusability Score Explanation Modal
-
----
-
-# 🔵 TECH REQUIREMENTS
-
-* React
-* Tailwind
-* Component-based architecture
-* Clean folder structure
-* Reusable UI components
-* Responsive layout
-* Desktop-first
-
----
-
-# 🔵 OUTPUT
-
-Provide:
-
-1. Full React code
-2. Clean structure
-3. No unnecessary comments
-4. Production-ready aesthetic
-5. Modern SaaS-level UI
-
+[Add contact information here]
