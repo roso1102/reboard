@@ -2,6 +2,8 @@
 
 E-Grade is a modern web platform designed to prevent functional electronics from becoming waste. It provides graded functional valuation and circular allocation for electronic components through automated testing, reusability scoring, and a marketplace for buying and selling tested components.
 
+Live site: [https://reboardindia.vercel.app/](https://reboardindia.vercel.app/)
+
 ## Overview
 
 E-Grade operates in two primary modes:
@@ -161,7 +163,3 @@ The reusability score (0-100%) indicates how suitable a component is for reuse:
 ## Contributing
 
 [Add contribution guidelines here]
-
-## Contact
-
-[Add contact information here]
