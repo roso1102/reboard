@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import Card from '../../components/Card'
 import Button from '../../components/Button'
 import Badge from '../../components/Badge'
@@ -15,6 +15,13 @@ import {
 } from '../../services/gemini'
 import { downloadReport } from '../../services/reportGenerator'
 import { useStore } from '../../context/StoreContext'
+import {
+  isWebSerialSupported,
+  connectSerial,
+  disconnectSerial,
+  sendCommand,
+  readUntilJSON,
+} from '../../services/serialService'
 
 const LAYER_NAMES = ['GPIO', 'ADC', 'PWM', 'UART', 'SPI', 'I2C', 'WiFi', 'BLE', 'Power']
 
@@ -251,6 +258,72 @@ function DownloadDropdown({ onDownload }) {
   )
 }
 
+function mapHardwareToResult(hw) {
+  const gradeChar = hw.grade?.charAt(6) || 'C'
+  const layers = {
+    GPIO: hw.gpio === 'PASS',
+    ADC: hw.adc === 'PASS',
+    PWM: false,
+    UART: false,
+    SPI: false,
+    I2C: false,
+    WiFi: hw.wifi === 'PASS',
+    BLE: false,
+    Power: !!hw.power,
+  }
+
+  const testedLayers = [
+    { key: 'Core', status: hw.core === 'PASS' ? 'Working' : 'Failed', notes: hw.core === 'PASS' ? 'Boot sequence verified' : 'Core boot failed' },
+    { key: 'Power', status: hw.power ? 'Working' : 'Failed', notes: hw.power || 'Not detected' },
+    { key: 'GPIO', status: hw.gpio === 'PASS' ? 'Working' : 'Failed', notes: hw.gpio === 'PASS' ? 'Loopback test passed' : 'Pin test failed' },
+    { key: 'WiFi', status: hw.wifi === 'PASS' ? 'Working' : 'Failed', notes: hw.wifi === 'PASS' ? 'STA mode OK' : 'WiFi module unresponsive' },
+    { key: 'ADC', status: hw.adc === 'PASS' ? 'Working' : 'Failed', notes: hw.adc === 'PASS' ? 'Analog read OK' : 'ADC read failed' },
+  ]
+
+  const capabilityMatrix = [
+    ...testedLayers.map((l) => ({ feature: l.key, status: l.status, notes: l.notes })),
+    { feature: 'PWM', status: 'N/A', notes: 'Not tested' },
+    { feature: 'UART', status: 'N/A', notes: 'Not tested' },
+    { feature: 'SPI', status: 'N/A', notes: 'Not tested' },
+    { feature: 'I2C', status: 'N/A', notes: 'Not tested' },
+    { feature: 'BLE', status: 'N/A', notes: 'Not tested' },
+  ]
+
+  const score = hw.healthScore ?? 0
+  const useCases = score >= 85
+    ? ['IoT Deployment', 'Prototyping', 'Sensor Networks', 'Automation']
+    : score >= 60
+    ? ['Prototyping', 'Learning', 'Non-critical IoT']
+    : ['Learning', 'Component Salvage']
+
+  const risks = []
+  if (hw.gpio !== 'PASS') risks.push('GPIO failure — pin-dependent features unreliable')
+  if (hw.wifi !== 'PASS') risks.push('WiFi failure — no wireless connectivity')
+  if (hw.adc !== 'PASS') risks.push('ADC failure — analog sensor readings unavailable')
+  risks.push('Verified via hardware dock — re-test recommended before production use')
+
+  const co2 = score >= 85 ? '~0.5 kg' : score >= 60 ? '~0.3 kg' : '~0.1 kg'
+  const value = score >= 85 ? '₹500' : score >= 60 ? '₹300' : '₹100'
+
+  return {
+    grade: gradeChar,
+    reusability: score,
+    layers,
+    capabilityMatrix,
+    useCases,
+    risks,
+    co2Saved: co2,
+    estimatedValue: value,
+    summary: `${hw.boardId || 'Board'} tested via hardware dock. Health Score: ${score}%. ${hw.suggestion || ''}`,
+    recommendation: `This component was graded ${gradeChar} with ${score}% reusability based on live hardware diagnostics. ` +
+      `Tested layers: Core (${hw.core}), Power (${hw.power}), GPIO (${hw.gpio}), WiFi (${hw.wifi}), ADC (${hw.adc}). ` +
+      `Recommended for: ${hw.suggestion || 'General use'}. ` +
+      `Disclaimer: This assessment is based on automated dock testing and should not be solely relied upon for safety-critical or mission-critical applications.`,
+    geminiPowered: false,
+    hardwareTested: true,
+  }
+}
+
 export default function TestNewComponent() {
   const [componentType, setComponentType] = useState('')
   const [category, setCategory] = useState('')
@@ -271,6 +344,89 @@ export default function TestNewComponent() {
   const { burst: burstInventory, LeafLayer: InventoryLeaves } = useLeafBurst()
   const { burst: burstMarketplace, LeafLayer: MarketplaceLeaves } = useLeafBurst()
   const { addComponent } = useStore()
+
+  const [serialPort, setSerialPort] = useState(null)
+  const [serialStatus, setSerialStatus] = useState('disconnected')
+  const [serialLog, setSerialLog] = useState([])
+  const [hwTesting, setHwTesting] = useState(false)
+  const serialLogRef = useRef(null)
+  const abortRef = useRef(null)
+
+  useEffect(() => {
+    if (serialLogRef.current) {
+      serialLogRef.current.scrollTop = serialLogRef.current.scrollHeight
+    }
+  }, [serialLog])
+
+  useEffect(() => {
+    return () => {
+      if (serialPort) disconnectSerial(serialPort).catch(() => {})
+    }
+  }, [serialPort])
+
+  const handleSerialConnect = useCallback(async () => {
+    try {
+      if (serialPort) {
+        await disconnectSerial(serialPort)
+        setSerialPort(null)
+        setSerialStatus('disconnected')
+        setSerialLog([])
+        return
+      }
+      setSerialStatus('connecting')
+      const port = await connectSerial()
+      setSerialPort(port)
+      setSerialStatus('connected')
+      setSerialLog((l) => [...l, { type: 'system', text: 'Connected to Arduino dock' }])
+    } catch (e) {
+      setSerialStatus('disconnected')
+      if (e.name !== 'NotFoundError') {
+        setSerialLog((l) => [...l, { type: 'error', text: 'Connection failed: ' + e.message }])
+      }
+    }
+  }, [serialPort])
+
+  const handleHardwareTest = useCallback(async () => {
+    if (!serialPort) return
+    setHwTesting(true)
+    setSerialLog((l) => [...l, { type: 'system', text: 'Sending RUN_TEST command...' }])
+    setResult(null)
+    setSuccessAction(null)
+
+    const controller = new AbortController()
+    abortRef.current = controller
+
+    try {
+      await sendCommand(serialPort, 'RUN_TEST')
+
+      const hwData = await readUntilJSON(serialPort, {
+        onLine: (line) => {
+          const type = line.startsWith('[Dock]') ? 'dock' : line.includes(':') ? 'data' : 'info'
+          setSerialLog((l) => [...l, { type, text: line }])
+        },
+        timeoutMs: 30000,
+        signal: controller.signal,
+      })
+
+      setSerialLog((l) => [...l, { type: 'system', text: 'Test complete — processing results...' }])
+
+      const mapped = mapHardwareToResult(hwData)
+      setResult(mapped)
+
+      if (!componentType) {
+        setComponentType('ESP32')
+        setCategory('Microcontroller')
+      }
+      if (hwData.boardId) setSerial(hwData.boardId)
+    } catch (e) {
+      if (e.name !== 'AbortError') {
+        setSerialLog((l) => [...l, { type: 'error', text: 'Test failed: ' + e.message }])
+      }
+    } finally {
+      setHwTesting(false)
+      abortRef.current = null
+    }
+  }, [serialPort, componentType])
 
   const handleComponentSelect = (opt) => {
     setComponentType(opt.label || opt.value)
@@ -520,6 +676,101 @@ export default function TestNewComponent() {
             </form>
           </Card>
 
+          {isWebSerialSupported() && (
+            <Card>
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="font-bold text-gray-900">Live Hardware Test</h3>
+                  <p className="text-xs text-gray-500 mt-0.5">Connect Arduino dock via USB to run real-time diagnostics</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className={`w-2 h-2 rounded-full ${
+                    serialStatus === 'connected' ? 'bg-green-500' : serialStatus === 'connecting' ? 'bg-yellow-400 animate-pulse' : 'bg-gray-300'
+                  }`} />
+                  <span className="text-xs text-gray-500 capitalize">{serialStatus}</span>
+                </div>
+              </div>
+
+              <div className="flex gap-2 mb-4">
+                <button
+                  type="button"
+                  onClick={handleSerialConnect}
+                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
+                    serialPort
+                      ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      : 'bg-gray-900 text-white hover:bg-gray-800'
+                  }`}
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    {serialPort ? (
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                    ) : (
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                    )}
+                  </svg>
+                  {serialPort ? 'Disconnect' : 'Connect Device'}
+                </button>
+
+                {serialPort && (
+                  <button
+                    type="button"
+                    onClick={handleHardwareTest}
+                    disabled={hwTesting}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-green-600 text-white hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {hwTesting ? (
+                      <>
+                        <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" className="opacity-25" />
+                          <path d="M4 12a8 8 0 018-8" stroke="currentColor" strokeWidth="3" strokeLinecap="round" className="opacity-75" />
+                        </svg>
+                        Testing...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Run Hardware Test
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
+
+              {serialLog.length > 0 && (
+                <div ref={serialLogRef} className="rounded-xl bg-gray-950 border border-gray-800 p-4 max-h-56 overflow-auto font-mono text-xs leading-relaxed">
+                  {serialLog.map((entry, i) => (
+                    <div key={i} className={
+                      entry.type === 'system' ? 'text-blue-400'
+                      : entry.type === 'error' ? 'text-red-400'
+                      : entry.type === 'dock' ? 'text-yellow-300'
+                      : entry.type === 'data' ? 'text-green-400'
+                      : 'text-gray-400'
+                    }>
+                      {entry.type === 'system' && <span className="text-gray-600">{'> '}</span>}
+                      {entry.text}
+                    </div>
+                  ))}
+                  {hwTesting && (
+                    <div className="text-gray-500 animate-pulse">Waiting for hardware response...</div>
+                  )}
+                </div>
+              )}
+
+              {!serialPort && serialLog.length === 0 && (
+                <div className="rounded-xl border border-dashed border-gray-200 p-6 text-center">
+                  <svg className="w-8 h-8 mx-auto text-gray-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                  </svg>
+                  <p className="text-sm text-gray-500">Connect your Arduino testing dock to run live diagnostics</p>
+                  <p className="text-xs text-gray-400 mt-1">Requires Chrome or Edge browser</p>
+                </div>
+              )}
+            </Card>
+          )}
+
           {circuitData && (
             <Card>
               <div className="flex items-center justify-between mb-4">
@@ -645,6 +896,9 @@ export default function TestNewComponent() {
                   <h3 className="text-xl font-bold text-gray-900">Diagnostic Report</h3>
                   {result.geminiPowered && (
                     <span className="text-[10px] bg-gray-900 text-white px-2 py-0.5 rounded-full font-medium">Intelligent Analysis</span>
+                  )}
+                  {result.hardwareTested && (
+                    <span className="text-[10px] bg-green-600 text-white px-2 py-0.5 rounded-full font-medium">Hardware Verified</span>
                   )}
                 </div>
                 <p className="text-sm text-gray-500 mt-1">{componentType}{modelName ? ` — ${modelName}` : ''}</p>
